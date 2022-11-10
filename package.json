@@ -1,0 +1,30 @@
+{
+  "name": "tinyvault",
+  "version": "1.0.0",
+  "description": "This is a simple password manager built to run hybrid on Nodejs and browser",
+  "main": "vault.js",
+  "bin": {
+    "tinyvault": "./bin/cli.js"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "password",
+    "credentials",
+    "encryption",
+    "cryptography",
+    "aes"
+  ],
+  "author": "Samuel Godoy",
+  "license": "MIT",
+  "dependencies": {
+    "@msgpack/msgpack": "2.8.x"
+  },
+  "devDependencies": {
+    "eslint": "8.27.x",
+    "eslint-config-google": "0.14.x",
+    "eslint-plugin-jsdoc": "39.6.x",
+    "eslint-plugin-security": "1.5.x"
+  }
+}
