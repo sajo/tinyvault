@@ -127,7 +127,9 @@ class Vault {
  * @return  {Buffer} -  Data as buffer
  */
   static #hexToBuf = (hex) => {
-    for (let bytes = [], c = 0; c < hex.length; c += 2) {
+    let bytes;
+    let c;
+    for (bytes = [], c = 0; c < hex.length; c += 2) {
       bytes.push(parseInt(hex.substr(c, 2), 16));
     }
     return new Uint8Array(bytes);
@@ -206,8 +208,6 @@ class Vault {
     Object.assign(newData, {[envault['PASS']]: Vault.#bufToHex(ENC_PASS)});
     // Processing new vault
     Object.assign(this.data, {[envault['BODY']]: [{...newData}, ...this.data[[envault['BODY']]]]});
-    console.log(JSON.stringify(this.data, null, 2));
-
     return this.data;
   }
 
