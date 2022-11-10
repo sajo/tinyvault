@@ -69,7 +69,7 @@ switch (args.mode) {
   case (args.help) || (args.h):
     const log = console.log;
     log('tinyvault -mode=generate -password=');
-    log('tinyvault -mode=addpass -password= -extra= -user= -newPass=');
+    log('tinyvault -mode=addpass -password= -extra= -user= -newpass=');
     log('tinyvault -mode=viewpass -password=');
     log('tinyvault -mode=dellpass -idpass=<idAvailable@vault>');
     break;
