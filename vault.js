@@ -285,3 +285,6 @@ class Vault {
   }
 };
 
+if (!isBrowser) {
+  module.exports = Vault;
+}
