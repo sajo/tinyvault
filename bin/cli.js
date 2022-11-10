@@ -61,7 +61,7 @@ switch (args.mode) {
     cofre.dellPass(args.idpass, msgpack.decode(binary)).then((dataVault) => {
       fs.writeFile('./vault.dat', msgpack.encode(dataVault), 'binary', (err)=>{
         if (err) console.log(err);
-        else console.log('Generated password vault');
+        else console.log('Password removed');
       });
     });
     break;
