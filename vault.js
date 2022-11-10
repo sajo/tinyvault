@@ -1,5 +1,5 @@
 'use strict';
-const isBrowser = window instanceof window.Window;
+const isBrowser = typeof window !== 'undefined' && window.hasOwnProperty('Window') && window instanceof window.Window;
 const crypto = isBrowser ? window.crypto : eval(`require("crypto")`);
 let envault = isBrowser ? window.vault : eval(`require("process")`).vault;
 envault = {
