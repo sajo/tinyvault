@@ -1,5 +1,5 @@
 {
-  "name": "tinyvault",
+  "name": "@sajobr/tinyvault",
   "version": "1.0.0",
   "description": "This is a simple password manager built to run hybrid on Nodejs and browser",
   "main": "vault.js",
@@ -26,6 +26,9 @@
     "eslint-config-google": "0.14.x",
     "eslint-plugin-jsdoc": "39.6.x",
     "eslint-plugin-security": "1.5.x"
+  },
+  "publishConfig": {
+    "registry": "https://npm.pkg.github.com"
   }
 }
 
