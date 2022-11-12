@@ -28,7 +28,7 @@
     "eslint-plugin-security": "1.5.x"
   },
   "publishConfig": {
-    "registry": "https://npm.pkg.github.com/sajo"
+    "registry": "https://npm.pkg.github.com"
   },
   "repository": {
     "type": "git",
