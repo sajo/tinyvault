@@ -1,5 +1,5 @@
 {
-  "name": "tinyvault",
+  "name": "@sajo/tinyvault",
   "version": "1.0.0",
   "description": "This is a simple password manager built to run hybrid on Nodejs and browser",
   "main": "vault.js",
