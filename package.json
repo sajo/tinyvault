@@ -1,13 +1,13 @@
 {
-  "name": "@sajobr/tinyvault",
+  "name": "tinyvault",
   "version": "1.0.0",
   "description": "This is a simple password manager built to run hybrid on Nodejs and browser",
   "main": "vault.js",
   "bin": {
-    "tinyvault": "./bin/cli.js"
+    "tinyvault": "bin/cli.js"
   },
   "scripts": {
-    "lint":"npx eslint vault.js"
+    "lint": "npx eslint vault.js"
   },
   "keywords": [
     "password",
@@ -29,8 +29,13 @@
   },
   "publishConfig": {
     "registry": "https://npm.pkg.github.com"
-  }
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/sajo/tinyvault.git"
+  },
+  "bugs": {
+    "url": "https://github.com/sajo/tinyvault/issues"
+  },
+  "homepage": "https://github.com/sajo/tinyvault#readme"
 }
-
-
-
