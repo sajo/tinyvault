@@ -35,11 +35,11 @@ await vt.dellPass("6b010f",vt.data);
 Module 
 
 ```
-npm install @sajo/tinyvault --registry=https://registry.npmjs.org
+npm install @sajo/tinyvault --registry=https://npm.pkg.github.com
 ```
 NODE CLI
 ```
-npm install -g @sajo/tinyvault --registry=https://registry.npmjs.org
+npm install -g @sajo/tinyvault --registry=https://npm.pkg.github.com
 ```
 
 
