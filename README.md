@@ -7,3 +7,46 @@ Este é um gerenciador de senhas simples, ele foi construido para ser executado 
 EN
 
 This is a simple password manager, built to run in the browser without external libraries and can be used with the Nodejs command line interface
+
+
+BROWSER - HTML TAG 
+
+```HTML
+<script type="application/javascript" src="vault.js">
+````
+
+Init
+```Javascript
+var vt  = new Vault();
+vt.iterations = 100000; // 1000000
+vt.pbkdf2Sizebits = 256;
+vt.mode = "AES-CBC"; // CBC OR GCM
+passVault.hash = "SHA-256"; // 256 or 512
+````
+
+
+```Javascript
+var data = await vt.generate("P4ssw0rd");
+await vt.addPass("P4ssw0rd",vt.data,"google","MyNickName",'1@Pass');
+await vt.viewPass("simpleP4ssw0rd",vt.data);
+await vt.dellPass("6b010f",vt.data);
+```
+
+NODE 
+
+```
+npm install -g ./tinyvault
+```
+NODE Root (Linux)
+```
+sudo npm install -g ./tinyvault
+```
+
+```sh
+tinyvault -mode=generate -password=P4ssw0rd
+tinyvault -mode=addpass -password=P4ssw0rd -extra=google -user=MyNickName -newpass=1@Pass
+tinyvault -mode=viewpass -password=P4ssw0rd
+tinyvault -mode=dellpass -idpass=<idAvailable@vault>
+```
+
+
