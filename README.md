@@ -32,15 +32,17 @@ await vt.viewPass("simpleP4ssw0rd",vt.data);
 await vt.dellPass("6b010f",vt.data);
 ```
 
-NODE 
+Module 
 
 ```
-npm install -g ./tinyvault
+npm install @sajo/tinyvault --registry=https://registry.npmjs.org
 ```
-NODE Root (Linux)
+NODE CLI
 ```
-sudo npm install -g ./tinyvault
+npm install -g @sajo/tinyvault --registry=https://registry.npmjs.org
 ```
+
+
 
 ```sh
 tinyvault -mode=generate -password=P4ssw0rd
