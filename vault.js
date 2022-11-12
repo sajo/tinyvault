@@ -1,18 +1,7 @@
 'use strict';
 const isBrowser = typeof window !== 'undefined' && window.hasOwnProperty('Window') && window instanceof window.Window;
-const crypto = isBrowser ? window.crypto : eval(`require("crypto")`);
-let envault = isBrowser ? window.vault : eval(`require("process")`).vault;
-envault = {
-  'ID': 0,
-  'IV': 1,
-  'SALT': 2,
-  'SEED': 3,
-  'BODY': 4,
-  'PEPPER': 5,
-  'EXTRA': 6,
-  'USER': 7,
-  'PASS': 8,
-};
+const crypto = isBrowser ? window.crypto : require('crypto');
+const envault = {'ID': 0, 'IV': 1, 'SALT': 2, 'SEED': 3, 'BODY': 4, 'PEPPER': 5, 'EXTRA': 6, 'USER': 7, 'PASS': 8};
 /**
  * Class
  * @module Vault
@@ -26,7 +15,7 @@ class Vault {
  * @param {String} mode - Algorithm to encrypt the first layer'AES-CBC' or 'AES-GCM'
  * @param {String} hash - Algorithm to derive key 'SHA-256' or 'SHA-512'
  */
-  constructor(data, iterations = 100000, pbkdf2Sizebits = 256, mode = 'AES-CBC', hash = 'SHA-256') {
+  constructor(data = {}, iterations = 100000, pbkdf2Sizebits = 256, mode = 'AES-CBC', hash = 'SHA-256') {
     this.data = data;
     this.iterations = iterations;
     this.pbkdf2Sizebits = pbkdf2Sizebits;
@@ -68,7 +57,7 @@ class Vault {
     const bits = await crypto.subtle.deriveBits({
       name: 'PBKDF2',
       hash: hash,
-      salt: cSalt,
+      salt: Vault.#hexToBuf(cSalt),
       iterations: cIterations,
     }, key, size);
     return bits;
@@ -153,7 +142,7 @@ class Vault {
     const configEnc = {name: this.mode,
       iv: Vault.#hexToBuf(this.data[[envault['IV']]])};
     const derkey = await Vault.#pbkdf2(rawKey,
-        Vault.#hexToBuf(this.data[[envault['SALT']]]),
+        this.data[[envault['SALT']]],
         this.iterations,
         this.pbkdf2Sizebits,
         this.hash);
@@ -175,32 +164,30 @@ class Vault {
   async addPass(rawKey, dataVault, extraData, user, newPass) {
     this.data = dataVault;
     const newData = {};
-    const derkey = await Vault.#pbkdf2(rawKey,
-        Vault.#hexToBuf(this.data[[envault['SALT']]]),
-        this.iterations,
-        this.pbkdf2Sizebits,
-        this.hash);
+    const derkey = await Vault
+        .#pbkdf2(
+            rawKey,
+            this.data[[envault['SALT']]],
+            this.iterations,
+            this.pbkdf2Sizebits,
+            this.hash,
+        );
 
     let configEnc = {name: this.mode, iv: Vault.#hexToBuf(this.data[[envault['IV']]])};
     const SEED = await Vault.#decrypt(derkey, configEnc, Vault.#hexToBuf(this.data[[envault['SEED']]]));
     Object.assign(newData, {[envault['PEPPER']]: Vault.#rand(3)});
 
-    let derIV = await Vault.#pbkdf2(SEED, Vault
-        .#hexToBuf(
-            newData[[envault['PEPPER']]]),
-    this.iterations,
-    128,
-    this.hash);
+    let derIV = await Vault.#pbkdf2(SEED, newData[[envault['PEPPER']]], this.iterations, 128, this.hash);
     configEnc = {name: this.mode, iv: derIV};
     extraData = await Vault.#encrypt(derkey, configEnc, Vault.#strToBuf(extraData));
     Object.assign(newData, {[envault['EXTRA']]: Vault.#bufToHex(extraData)});
 
-    derIV = await Vault.#pbkdf2(SEED, Vault.#hexToBuf(newData[[envault['PEPPER']]]), this.iterations+1, 128, this.hash);
+    derIV = await Vault.#pbkdf2(SEED, newData[[envault['PEPPER']]], this.iterations+1, 128, this.hash);
     configEnc = {name: this.mode, iv: derIV};
     user = await Vault.#encrypt(derkey, configEnc, Vault.#strToBuf(user));
     Object.assign(newData, {[envault['USER']]: Vault.#bufToHex(user)});
 
-    derIV = await Vault.#pbkdf2(SEED, Vault.#hexToBuf(newData[[envault['PEPPER']]]), this.iterations+2, 128, this.hash);
+    derIV = await Vault.#pbkdf2(SEED, newData[[envault['PEPPER']]], this.iterations+2, 128, this.hash);
     configEnc = {name: this.mode, iv: derIV};
 
     configEnc = {name: 'AES-CTR', counter: derIV, length: newPass.length};
@@ -232,19 +219,19 @@ class Vault {
     for (const item of this.data[[envault['BODY']]]) {
       Object.assign(uniqueData, {'ID': item[[envault['PEPPER']]]});
       let derIV = await Vault.#pbkdf2(SEED,
-          Vault.#hexToBuf(item[[envault['PEPPER']]]),
+          item[[envault['PEPPER']]],
           this.iterations, 128, this.hash);
       configEnc = {name: this.mode, iv: derIV};
 
       const extradata = await Vault.#decrypt(derkey, configEnc, Vault.#hexToBuf(item[[envault['EXTRA']]]));
       Object.assign(uniqueData, {'EXTRA': Vault.#bufToStr(extradata)});
 
-      derIV = await Vault.#pbkdf2(SEED, Vault.#hexToBuf(item[[envault['PEPPER']]]), this.iterations+1, 128, this.hash);
+      derIV = await Vault.#pbkdf2(SEED, item[[envault['PEPPER']]], this.iterations+1, 128, this.hash);
       configEnc = {name: this.mode, iv: derIV};
       const user = await Vault.#decrypt(derkey, configEnc, Vault.#hexToBuf(item[[envault['USER']]]));
       Object.assign(uniqueData, {'USER': Vault.#bufToStr(user)});
 
-      derIV = await Vault.#pbkdf2(SEED, Vault.#hexToBuf(item[[envault['PEPPER']]]), this.iterations+2, 128, this.hash);
+      derIV = await Vault.#pbkdf2(SEED, item[[envault['PEPPER']]], this.iterations+2, 128, this.hash);
       configEnc = {name: 'AES-CTR', counter: derIV, length: Vault.#hexToBuf(item[[envault['PASS']]]).length};
       const decPass = await Vault.#decrypt(derkey, configEnc, Vault.#hexToBuf(item[[envault['PASS']]]));
       Object.assign(uniqueData, {'PASS': Vault.#bufToStr(decPass)});
